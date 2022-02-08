@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import Table from './Table'
 import Form from './Form'
 
@@ -33,23 +34,70 @@ function MyApp () {
     }
   }
 
+  async function makeDeleteCall (id) {
+    try {
+      const response = await axios.delete('http://localhost:5000/users/' + id)
+      return response
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
   function removeOneCharacter (index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index
+    makeDeleteCall(characters[index]._id).then(result => {
+      if (result && result.status === 204) {
+        const updated = characters.filter((character, i) => {
+          return i !== index
+        })
+        setCharacters(updated)
+      }
     })
-    setCharacters(updated)
   }
 
   function updateList (person) {
     makePostCall(person).then(result => {
-      if (result && result.status === 200) { setCharacters([...characters, person]) }
+      if (result && result.status === 201) {
+        setCharacters([...characters, result.data])
+      }
     })
   }
 
   return (
+    // This is what we had before:
+    // <div className='container'>
+    //   <Table characterData={characters} removeCharacter={removeOneCharacter} />
+    //   <Form handleSubmit={updateList} />
+    // </div>
     <div className='container'>
-      <Table characterData={characters} removeCharacter={removeOneCharacter} />
-      <Form handleSubmit={updateList} />
+      <BrowserRouter>
+        <nav>
+          <ul>
+            <li><Link to='/users-table'>List all</Link></li>
+            <li><Link to='/form'>Insert one</Link></li>
+          </ul>
+        </nav>
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <h1>Choose your path!</h1>
+            }
+          />
+          <Route
+            path='/users-table'
+            element={
+              <Table characterData={characters} removeCharacter={removeOneCharacter} />
+            }
+          />
+          <Route
+            path='/form'
+            element={
+              <Form handleSubmit={updateList} />
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }
