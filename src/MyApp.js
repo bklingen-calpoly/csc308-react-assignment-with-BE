@@ -3,19 +3,35 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import Table from './Table'
 import Form from './Form'
+import LoginForm from './LoginForm'
+import { useCookies } from 'react-cookie'
 
 function MyApp () {
   const [characters, setCharacters] = useState([])
+  const [cookies, setCookie] = useCookies(['auth_token'])
+
+  function setToken (token) {
+    setCookie('auth_token', token,
+      {
+        maxAge: 1800,
+        path: '/'
+      }
+    )
+  }
 
   useEffect(() => {
     fetchAll().then(result => {
       if (result) { setCharacters(result) }
     })
-  }, [])
+  }, [cookies])
 
   async function fetchAll () {
     try {
-      const response = await axios.get('http://localhost:5000/users')
+      const config = {
+        headers: { Authorization: `Bearer ${cookies.auth_token}` }
+      }
+      const response = await axios.get('http://localhost:5000/users', config)
+      console.log(response)
       return response.data.users_list
     } catch (error) {
       // We're not handling errors. Just logging into the console.
@@ -75,6 +91,8 @@ function MyApp () {
           <ul>
             <li><Link to='/users-table'>List all</Link></li>
             <li><Link to='/form'>Insert one</Link></li>
+            <li><Link to='/login'>Login</Link></li>
+            <li><Link to='/signup'>Sign Up</Link></li>
           </ul>
         </nav>
         <Routes>
@@ -94,6 +112,12 @@ function MyApp () {
             path='/form'
             element={
               <Form handleSubmit={updateList} />
+            }
+          />
+          <Route
+            path='/login'
+            element={
+              <LoginForm setToken={setToken} />
             }
           />
         </Routes>
