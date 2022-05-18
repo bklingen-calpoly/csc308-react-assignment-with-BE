@@ -58,35 +58,35 @@ describe('Backend (REST API) is listening', () => {
 
 describe('API takes an obj and adds it to the DB', () => {
     
-//     context('Successfull post', () => {
+    context('Successfull post', () => {
 
-//         before(() => {
-//         });
+        before(() => {
+        });
 
-//         let user = {};
+        let user = {};
 
-//         it('GIVEN My user object has valid fields (user and job)', () => {
-//             user = {
-//                 name: 'Pamela',
-//                 job: 'Software Engineer'
-//             }
-//         });
+        it('GIVEN My user object has valid fields (user and job)', () => {
+            user = {
+                name: 'Pamela',
+                job: 'Software Engineer'
+            }
+        });
 
-//         it('WHEN I attempt to post the user obj', () => {
-//             cy.request('POST', 'http://localhost:5000/users', user).then((response) => {
-//                 //Using matchers from Chai: https://www.chaijs.com/guide/styles/#assert
-                    //All Cypress supported matchers here: https://docs.cypress.io/guides/references/assertions
-//                 assert.equal(response.status, 201,
-//                     'THEN I receive a successfull response (code 201)');
-//                 assert.exists(response.body._id, 
-//                     'AND the response object contains the property _id');
-//                 assert.equal(response.body.name, user.name, 
-//                     'AND the response object contains the same name and job I passed');
-//                 assert.equal(response.body.job, user.job, 
-//                     'AND the response object contains the same name and job I passed');                    
-//             });
-//         });
-//     });
+        it('WHEN I attempt to post the user obj', () => {
+            cy.request('POST', 'http://localhost:5000/users', user).then((response) => {
+                //Using matchers from Chai: https://www.chaijs.com/guide/styles/#assert
+                   // All Cypress supported matchers here: https://docs.cypress.io/guides/references/assertions
+                assert.equal(response.status, 201,
+                    'THEN I receive a successfull response (code 201)');
+                assert.exists(response.body._id, 
+                    'AND the response object contains the property _id');
+                assert.equal(response.body.name, user.name, 
+                    'AND the response object contains the same name and job I passed');
+                assert.equal(response.body.job, user.job, 
+                    'AND the response object contains the same name and job I passed');                    
+            });
+        });
+    });
 
     context('Unsuccessfull post', () => {
 

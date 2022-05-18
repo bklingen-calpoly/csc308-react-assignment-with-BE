@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^8.2.1",
     "cypress": "^9.6.1",
     "standard": "^16.0.4"
   }
