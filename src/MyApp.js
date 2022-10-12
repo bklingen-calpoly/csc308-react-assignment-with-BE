@@ -14,7 +14,7 @@ function MyApp () {
 
   async function fetchAll () {
     try {
-      const response = await axios.get('http://localhost:5000/users')
+      const response = await axios.get('http://localhost:5050/users')
       return response.data.users_list
     } catch (error) {
       // We're not handling errors. Just logging into the console.
@@ -25,7 +25,7 @@ function MyApp () {
 
   async function makePostCall (person) {
     try {
-      const response = await axios.post('http://localhost:5000/users', person)
+      const response = await axios.post('http://localhost:5050/users', person)
       return response
     } catch (error) {
       console.log(error)
@@ -42,7 +42,7 @@ function MyApp () {
 
   function updateList (person) {
     makePostCall(person).then(result => {
-      if (result && result.status === 200) { setCharacters([...characters, person]) }
+      if (result && result.status === 201) { setCharacters([...characters, person]) }
     })
   }
 
