@@ -1,82 +1,90 @@
-import axios from 'axios'
-import React, { useState, useEffect } from 'react'
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import Table from './Table'
-import Form from './Form'
-import LoginForm from './LoginForm'
-import { useCookies } from 'react-cookie'
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import Table from "./Table";
+import Form from "./Form";
+import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
+import { useCookies } from "react-cookie";
+const BACKEND_URL = "http://localhost:8000";
 
-function MyApp () {
-  const [characters, setCharacters] = useState([])
-  const [cookies, setCookie] = useCookies(['auth_token'])
+function MyApp() {
+  const [characters, setCharacters] = useState([]);
+  const [cookies, setCookie] = useCookies(["auth_token"]);
 
-  function setToken (token) {
-    setCookie('auth_token', token,
-      {
-        maxAge: 1800,
-        path: '/'
-      }
-    )
+  function setToken(token) {
+    console.log("setToken: ", token);
+    setCookie("auth_token", token, {
+      maxAge: 1800,
+      path: "/",
+    });
   }
 
   useEffect(() => {
-    fetchAll().then(result => {
-      if (result) { setCharacters(result) }
-    })
-  }, [cookies])
+    fetchAll().then((result) => {
+      if (result) {
+        setCharacters(result);
+      }
+    });
+  }, []); //was cookies
 
-  async function fetchAll () {
+  async function fetchAll() {
     try {
       const config = {
-        headers: { Authorization: `Bearer ${cookies.auth_token}` }
+        headers: { Authorization: `Bearer ${cookies.auth_token}` },
+      };
+      if (cookies.auth_token) {
+        const response = await axios.get(`${BACKEND_URL}/users`, config);
+        console.log(response);
+        return response.data.users_list;
+      } else {
+        console.log("empty cookie");
+        return false;
       }
-      const response = await axios.get('http://localhost:5000/users', config)
-      console.log(response)
-      return response.data.users_list
     } catch (error) {
       // We're not handling errors. Just logging into the console.
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     }
   }
 
-  async function makePostCall (person) {
+  async function makePostCall(person) {
     try {
-      const response = await axios.post('http://localhost:5000/users', person)
-      return response
+      const response = await axios.post(`${BACKEND_URL}/users`, person);
+      return response;
     } catch (error) {
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     }
   }
 
-  async function makeDeleteCall (id) {
+  async function makeDeleteCall(id) {
     try {
-      const response = await axios.delete('http://localhost:5000/users/' + id)
-      return response
+      const response = await axios.delete(`${BACKEND_URL}/users${id}`);
+      return response;
     } catch (error) {
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     }
   }
 
-  function removeOneCharacter (index) {
-    makeDeleteCall(characters[index]._id).then(result => {
+  function removeOneCharacter(index) {
+    makeDeleteCall(characters[index]._id).then((result) => {
       if (result && result.status === 204) {
         const updated = characters.filter((character, i) => {
-          return i !== index
-        })
-        setCharacters(updated)
+          return i !== index;
+        });
+        setCharacters(updated);
       }
-    })
+    });
   }
 
-  function updateList (person) {
-    makePostCall(person).then(result => {
+  function updateList(person) {
+    makePostCall(person).then((result) => {
       if (result && result.status === 201) {
-        setCharacters([...characters, result.data])
+        setCharacters([...characters, result.data]);
       }
-    })
+    });
   }
 
   return (
@@ -85,45 +93,42 @@ function MyApp () {
     //   <Table characterData={characters} removeCharacter={removeOneCharacter} />
     //   <Form handleSubmit={updateList} />
     // </div>
-    <div className='container'>
+    <div className="container">
       <BrowserRouter>
         <nav>
           <ul>
-            <li><Link to='/users-table'>List all</Link></li>
-            <li><Link to='/form'>Insert one</Link></li>
-            <li><Link to='/login'>Login</Link></li>
-            <li><Link to='/signup'>Sign Up</Link></li>
+            <li>
+              <Link to="/users-table">List all</Link>
+            </li>
+            <li>
+              <Link to="/form">Insert one</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/signup">Sign Up</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
+          <Route path="/" element={<h1>Choose your path!</h1>} />
           <Route
-            path='/'
+            path="/users-table"
             element={
-              <h1>Choose your path!</h1>
+              <Table
+                characterData={characters}
+                removeCharacter={removeOneCharacter}
+              />
             }
           />
-          <Route
-            path='/users-table'
-            element={
-              <Table characterData={characters} removeCharacter={removeOneCharacter} />
-            }
-          />
-          <Route
-            path='/form'
-            element={
-              <Form handleSubmit={updateList} />
-            }
-          />
-          <Route
-            path='/login'
-            element={
-              <LoginForm setToken={setToken} />
-            }
-          />
+          <Route path="/form" element={<Form handleSubmit={updateList} />} />
+          <Route path="/login" element={<LoginForm setToken={setToken} />} />
+          <Route path="/signup" element={<SignupForm setToken={setToken} />} />
         </Routes>
       </BrowserRouter>
     </div>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;

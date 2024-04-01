@@ -1,63 +1,64 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const BACKEND_URL = "http://localhost:8000"; // todo: put in .env
 
-function Form (props) {
+function LoginForm(props) {
   const [user, setUser] = useState({
-    username: '',
-    pwd: ''
-  })
+    username: "",
+    pwd: "",
+  });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [message, setMsg] = useState('')
+  const [message, setMsg] = useState("");
 
-  function submitForm () {
+  function submitForm() {
     makeLoginCall(user).then((response) => {
       if (response && response.status === 200) {
-        const token = response.data
-        setUser({ username: '', pwd: '' })
-        setMsg('')
-        props.setToken(token)
-        navigate('/users-table')
+        const token = response.data;
+        setUser({ username: "", pwd: "" });
+        setMsg("");
+        props.setToken(token);
+        navigate("/users-table");
       } else {
-        setMsg('Invalid login credentials!')
+        setMsg("Invalid login credentials!");
       }
-    })
+    });
   }
 
-  async function makeLoginCall (user) {
+  async function makeLoginCall(user) {
     try {
-      const response = await axios.post('http://localhost:5000/login', user)
-      return response
+      const response = await axios.post(`${BACKEND_URL}/login`, user);
+      return response;
     } catch (error) {
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     }
   }
 
   return (
     <form>
-      <label htmlFor='name'>Username</label>
+      <label htmlFor="name">Username</label>
       <input
-        type='text'
-        name='username'
-        id='username'
+        type="text"
+        name="username"
+        id="username"
         value={user.username}
         onChange={(event) => setUser({ ...user, username: event.target.value })}
       />
-      <label htmlFor='job'>Password</label>
+      <label htmlFor="job">Password</label>
       <input
-        type='password'
-        name='pwd'
-        id='pwd'
+        type="password"
+        name="pwd"
+        id="pwd"
         value={user.pwd}
         onChange={(event) => setUser({ ...user, pwd: event.target.value })}
       />
-      <input type='button' value='Submit' onClick={submitForm} />
+      <input type="button" value="Submit" onClick={submitForm} />
       <i> {message} </i>
     </form>
-  )
+  );
 }
 
-export default Form
+export default LoginForm;
