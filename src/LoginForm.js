@@ -13,7 +13,8 @@ function LoginForm(props) {
 
   const [message, setMsg] = useState("");
 
-  function submitForm() {
+  function submitForm(e) {
+    e.preventDefault(); // Prevent page from reloading
     makeLoginCall(user).then((response) => {
       if (response && response.status === 200) {
         const token = response.data;

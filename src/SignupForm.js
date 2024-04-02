@@ -12,7 +12,8 @@ function SignupForm(props) {
 
   const [message, setMsg] = useState("");
 
-  function submitForm() {
+  function submitForm(e) {
+    e.preventDefault(); // Prevent page from reloading
     makeSignupCall().then((response) => {
       if (response && response.status === 201) {
         const token = response.data;
