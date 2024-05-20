@@ -14,9 +14,7 @@
 
 describe("Add new user", () => {
   context("Successfull post", () => {
-    beforeEach(() => {
-      cy.visit("http://localhost:3000/form");
-    });
+    beforeEach(() => {});
 
     it("GIVEN I navigate to the add user page", () => {
       cy.visit("http://localhost:3000/form");
@@ -24,6 +22,7 @@ describe("Add new user", () => {
 
     it("WHEN I enter user and job and submit the form", () => {
       cy.intercept("POST", "http://localhost:8000/users").as("addUser");
+      cy.visit("http://localhost:3000/form");
       cy.get("form").within(() => {
         cy.get('input[name="name"]').type("Pamela");
         cy.get('input[name="job"]').type("Sw Eng");
