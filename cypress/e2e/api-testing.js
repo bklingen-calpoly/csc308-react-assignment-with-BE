@@ -82,7 +82,7 @@ describe("API takes an obj and adds it to the DB", () => {
         assert.equal(
           response.status,
           201,
-          "THEN I receive a successfull response (code 201)"
+          "THEN I receive a successful response (code 201)"
         );
         assert.exists(
           response.body._id,

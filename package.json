@@ -20,8 +20,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test_e2e": "npx cypress run --record --key 11b73f49-a19e-4522-97b0-996367620420",
-    "test_e2e_interactive": "npx cypress open"
+    "test-e2e": "npx cypress run --record --key 11b73f49-a19e-4522-97b0-996367620420",
+    "test-e2e-interactive": "npx cypress open"
   },
   "browserslist": {
     "production": [
